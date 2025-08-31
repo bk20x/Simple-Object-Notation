@@ -1,0 +1,10 @@
+(from: bk20x;
+ timestamp: 102102012;
+ offer: 250;
+ items: [
+          (name: gold_sword;
+            amount: 2);
+           (name: health_potion;
+            amount: 7)
+        ]            
+)
