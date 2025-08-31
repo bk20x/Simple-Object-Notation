@@ -1,3 +1,7 @@
+# Simple Object Notation
+## S-expression based format designed to be easy to parse and easy on the eyes. I plan to make it fully mappable and interchangeable with JSON.
+
+```
 (
   mobs:[
    (name: green_slime;
@@ -44,3 +48,4 @@
   ]
   
 )
+```
