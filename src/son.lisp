@@ -1,7 +1,8 @@
 (defpackage :son
   (:use :cl :alexa :cl-ppcre :parse-float)
   (:export #:read-all-lines #:read-file-as-string #:lex #:get-symbol #:filter
-           #:son-object))
+           #:parse-toks
+           #:son-object #:make-son-object #:fields))
 
 (in-package :son)
 
@@ -39,6 +40,9 @@
   (declare (type token token))
    (car token))
 
+(defun get-val (token)
+  (declare (type token token))
+  (cdr token))
 (define-string-lexer son-lexer
   ((:num "\\b(?:\\d+\\.\\d+|\\d+|\\.\\d+)\\b")
    (:name "[A-Za-z][A-Za-z0-9_-]*"))
@@ -64,17 +68,74 @@
     :initarg :fields
     :accessor fields)))
 
+(defun make-son-object ()
+  (make-instance 'son-object))
 
-
-(defclass son-list (son-object)
-  ((elems
+(defclass son-list ()
+  ((elems             ;;`elems` is List[son-object]
     :initarg :elems
     :accessor elems)))
 
 
 
-
-
-
-;(defun parse-son-object ()
-;())
+(defun parse-toks (tokens)
+  "Parses a list of tokens into a son-object or son-list. ^-^"
+  (let ((current-toks tokens))
+    (labels ((next-token ()
+               "Gets next token and advances position. :)"
+               (if current-toks
+                   (prog1 (car current-toks)
+                     (setf current-toks (cdr current-toks)))
+                   nil))
+             (peek-token ()
+               "Checks next token without consuming. ^_^"
+               (car current-toks))
+             (match-token (expected)
+               "Consumes next token and errors if its type doesn't match. :P"
+               (let ((token (next-token)))
+                 (unless (and token (eql (get-symbol token) expected))
+                   (error "Expected token of type ~a but got ~a" expected token))
+                 token))
+             (parse-object ()
+               "Returns a son-object instance. (ᴗ˳ᴗ)ᶻ𝗓"
+               (match-token :obj-start)
+               (let ((ht (make-hash-table :test 'equal)))
+                 (loop while (and (peek-token) (not (eql (get-symbol (peek-token)) :obj-end)))
+                       do
+                       (let* ((key-token (match-token :ident))
+                              (key (get-val key-token)))
+                         (match-token :colon)
+                         (let ((val (parse-value)))
+                           (setf (gethash key ht) val)))
+                       (when (and (peek-token) (eql (get-symbol (peek-token)) :semicol))
+                         (next-token)))
+                 (match-token :obj-end)
+                 (make-instance 'son-object :fields ht)))
+             (parse-list ()
+               "Parses a list of objects and returns a son-list instance. :D"
+               (match-token :list-start)
+               (let ((items nil))
+                 (loop while (and (peek-token) (not (eql (get-symbol (peek-token)) :list-end)))
+                       do (setf items (nconc items (list (parse-value)))))
+                 (match-token :list-end)
+                 (make-instance 'son-list :elems (reverse items))))
+             (parse-value ()
+               "Parses the next token whether it's a list, object, or simple value. >_<"
+               (let ((token (peek-token)))
+                 (cond
+                   ((eql (get-symbol token) :obj-start) (parse-object))
+                   ((eql (get-symbol token) :list-start) (parse-list))
+                   (t (let ((simple-value-token (next-token)))
+                        (if simple-value-token
+                            (get-val simple-value-token)
+                            (error "Unexpected end of tokens while parsing simple value. 0_o"))))))))
+      (if (peek-token)
+          (let ((result (case (get-symbol (peek-token))
+                          (:obj-start (parse-object))
+                          (:list-start (parse-list))
+                          (t (error "Expected object or list at top level <_<."))))
+                (remaining-toks current-toks))
+            (if remaining-toks
+                (error "Unexpected tokens at end of stream: ~a ~_~" remaining-toks))
+            result)
+          (error "Empty token stream.")))))

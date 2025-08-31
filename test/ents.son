@@ -1,5 +1,5 @@
 (
-  mobs:[
+  mobs : [
   (name: green_slime;
    health: 50;
    damage: 5;
@@ -39,5 +39,4 @@
      item-type: WEAPON;
      rarity: RARE)
   ]
-  
 )
