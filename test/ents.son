@@ -1,4 +1,5 @@
 (
+  mobs:[
   (name: green_slime;
    health: 50;
    damage: 5;
@@ -28,7 +29,8 @@
    damage: 35;
    speed: 30;
    rarity: UNCOMMON
-  );
+  )
+  ];
   items: [
     (name: health_potion;
      item-type: POTION;
