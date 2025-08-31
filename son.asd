@@ -1,3 +1,3 @@
 (asdf:defsystem "son"
-  :depends-on ("alexa" "cl-ppcre" "parse-float")
+  :depends-on ("alexa" "parse-float")
   :components ((:file "src/son")))

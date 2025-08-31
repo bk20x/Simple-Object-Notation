@@ -1,5 +1,5 @@
 (defpackage :son
-  (:use :cl :alexa :cl-ppcre :parse-float)
+  (:use :cl :alexa  :parse-float)
   (:export #:read-all-lines #:read-file-as-string #:lex #:get-symbol #:filter
            #:parse-toks
            #:son-object #:son-list #:make-son-object #:fields #:elems))
