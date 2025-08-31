@@ -43,6 +43,7 @@
 (defun get-val (token)
   (declare (type token token))
   (cdr token))
+
 (define-string-lexer son-lexer
   ((:num "\\b(?:\\d+\\.\\d+|\\d+|\\.\\d+)\\b")
    (:name "[A-Za-z][A-Za-z0-9_-]*"))
