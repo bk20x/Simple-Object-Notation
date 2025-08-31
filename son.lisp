@@ -45,7 +45,7 @@
 
 
 (defclass son-object ()
-  ((fields
+  ((fields            ;; `fields` is son-object-map, k, v
     :initarg :fields
     :accessor fields)))
 
