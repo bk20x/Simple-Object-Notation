@@ -83,7 +83,7 @@
   "Parses a list of tokens into a son-object or son-list. ^-^"
   (let ((current-toks tokens))
     (labels ((next-token ()
-               "Gets next token and advances position. :)"
+               "Gets next token and advances position. :3"
                (if current-toks
                    (prog1 (car current-toks)
                      (setf current-toks (cdr current-toks)))
