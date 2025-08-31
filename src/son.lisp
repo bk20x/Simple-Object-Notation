@@ -2,7 +2,7 @@
   (:use :cl :alexa :cl-ppcre :parse-float)
   (:export #:read-all-lines #:read-file-as-string #:lex #:get-symbol #:filter
            #:parse-toks
-           #:son-object #:make-son-object #:fields))
+           #:son-object #:son-list #:make-son-object #:fields #:elems))
 
 (in-package :son)
 
@@ -136,6 +136,6 @@
                           (t (error "Expected object or list at top level <_<."))))
                 (remaining-toks current-toks))
             (if remaining-toks
-                (error "Unexpected tokens at end of stream: ~a ~_~" remaining-toks))
+                (error "Unexpected tokens at end of stream: ~a *_*" remaining-toks))
             result)
           (error "Empty token stream.")))))
