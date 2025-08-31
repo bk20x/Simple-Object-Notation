@@ -1,35 +1,35 @@
 (
-  mobs : [
-  (name: green_slime;
-   health: 50;
-   damage: 5;
-   speed: 55;
-   rarity: COMMON
-  );
-  (name: blue_slime;
-   health: 50;
-   damage: 10;
-   speed: 55;
-   rarity: COMMON    
-  );
-  (name: orange_slime;
-   health: 75;
-   damage: 20;
-   speed: 55;
-   rarity: COMMON
-  );
-  (name: skeleton;
-   health: 80;
-   damage: 25;
-   speed: 60;
-   rarity: COMMON
-  );
-  (name: will-o-wisp;
-   health: 100;
-   damage: 35;
-   speed: 30;
-   rarity: UNCOMMON
-  )
+  mobs:[
+    (name: green_slime;
+     health: 50;
+     damage: 5;
+     speed: 55;
+     rarity: COMMON
+    );
+    (name: blue_slime;
+     health: 50;
+     damage: 10;
+     speed: 55;
+     rarity: COMMON    
+    );
+    (name: orange_slime;
+     health: 75;
+     damage: 20;
+     speed: 55;
+     rarity: COMMON
+    );
+    (name: skeleton;
+     health: 80;
+     damage: 25;
+     speed: 60;
+     rarity: COMMON
+    );
+    (name: will-o-wisp;
+     health: 100;
+     damage: 35;
+     speed: 30;
+     rarity: UNCOMMON
+    )
   ];
   items: [
     (name: health_potion;
