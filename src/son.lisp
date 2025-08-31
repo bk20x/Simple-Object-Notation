@@ -118,8 +118,10 @@
                (let ((items nil))
                  (loop while (and (peek-token) (not (eql (get-symbol (peek-token)) :list-end)))
                        do (setf items (nconc items (list (parse-value)))))
-                 (match-token :list-end)
-                 (make-instance 'son-list :elems (nreverse items))))
+                 (match-token :list-end) 
+                 (let ((items-list
+                         (remove-if #'null items)))
+                   (make-instance 'son-list :elems items-list))))
              (parse-value ()
                "Parses the next token whether it's a list, object, or simple value. >_<"
                (let ((token (peek-token)))

@@ -34,9 +34,15 @@
   items: [
     (name: health_potion;
      item-type: POTION;
-     rarity: UNCOMMON);
+     rarity: UNCOMMON
+    );
     (name: staff_of_frostbite;
      item-type: WEAPON;
-     rarity: RARE)
+     rarity: RARE
+    )
   ]
 )
+
+
+
+
