@@ -1,6 +1,6 @@
 (defpackage :son
   (:use :cl :alexa :cl-ppcre :parse-float)
-  (:export #:read-all-lines #:read-file-as-string #:lex
+  (:export #:read-all-lines #:read-file-as-string #:lex #:get-symbol #:filter
            #:son-object))
 
 (in-package :son)
@@ -18,11 +18,26 @@
     (loop for ln = (read-line stream nil)
           collect ln)))
 
+
+(defun filter (pred xs)
+  (let ((result nil))
+    (loop for x in xs
+          when (funcall pred x)
+          do (push x result))
+    (if (= 1 (length result))
+        (car result)
+        (nreverse result))))
+
+
 (deftype token ()
   `(cons keyword t))
 
 (defun tok (type &optional val)
   (cons type val))
+
+(defun get-symbol (token)
+  (declare (type token token))
+   (car token))
 
 (define-string-lexer son-lexer
   ((:num "\\b(?:\\d+\\.\\d+|\\d+|\\.\\d+)\\b")
@@ -44,28 +59,21 @@
         collect tok))
 
 
-(defclass son-object ()
-  ((fields            ;; `fields` is son-object-map, k, v
+(defclass son-object () ;;impl for son-object as `(foo: bar; baz: 69)`
+  ((fields              ;;`fields` is Hash-Table[string :: T]
     :initarg :fields
     :accessor fields)))
 
 
-(defclass son-list ()
+
+(defclass son-list (son-object)
   ((elems
     :initarg :elems
     :accessor elems)))
 
 
-(deftype son-object-map ()
-  '(and hash-table
-    (satisfies son-object-map-p)))
 
-(defun son-object-map-p (table)
-  (and (hash-table-p table)
-       (loop for k being the hash-keys of table
-             always (typep k 'string))
-       (loop for v being the hash-values of table
-             always (typep v 'son-object))))
+
 
 
 ;(defun parse-son-object ()
