@@ -139,4 +139,4 @@
             (if remaining-toks
                 (error "Unexpected tokens at end of stream: ~a *_*" remaining-toks))
             result)
-          (error "Empty token stream.")))))
+          (error "Empty token stream. 7_7")))))
