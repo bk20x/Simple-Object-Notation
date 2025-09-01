@@ -109,13 +109,13 @@
                        (let* ((key-token (match-token :ident))
                               (key (get-val key-token)))
                          (match-token :colon)
-                         (let ((val (parse-value)))
+                          (let ((val (parse-value)))
                            (setf (gethash key ht) val)))
-                         (when
+                          (when
                             (and
-                              (peek-token)
-                               (eql (get-symbol (peek-token)) :semicol))
-                                 (next-token)))
+                             (peek-token)
+                              (eql (get-symbol (peek-token)) :semicol))
+                               (next-token)))
                  (match-token :obj-end)
                  (make-instance 'son-object :fields ht)))
              (parse-list ()
@@ -141,8 +141,9 @@
                         (if simple-value-token
                             (get-val simple-value-token)
                             (error "Unexpected end of tokens while parsing simple value. 0_o"))))))))
-         (if (peek-token)
-             (let ((result
+              (if (peek-token)
+
+            (let((result
                      (case (get-symbol (peek-token))
                           (:obj-start (parse-object))
                           (:list-start (parse-list))
