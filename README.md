@@ -4,12 +4,12 @@
 ```
 (
   mobs:[
-   (name: green_slime; --- No quotes required for identifiers or String values
+   (name: green_slime; --- No quotes required for identifiers or String values, Strings are encoded for you.
     health: 50;
     damage: 5;
     speed: 55;
-    rarity: COMMON --- Semicolons optional for the last element in a list/object
-   );             
+    rarity: COMMON --- Semicolons optional for the last element in a list/object. 
+   );                  ^^^ they are required if you remove all whitespace, uglification for example.
    (name: blue_slime;
     health: 50;
     damage: 10;

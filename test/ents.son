@@ -1,8 +1,8 @@
 (
   mobs: [
-    (name: green_slime;
-     health: 50;
-     damage: 5;
+    (name: green_slime; 
+     health: 50; 
+     damage: 5; 
      speed: 55;
      rarity: COMMON
     );
@@ -29,7 +29,7 @@
      damage: 35;
      speed: 30;
      rarity: UNCOMMON
-    )
+    );
   ];
   items: [
     (name: health_potion;
@@ -39,9 +39,19 @@
     (name: staff_of_frostbite;
      item-type: WEAPON;
      rarity: RARE
-    )
-  ]
+    );
+    (name: the_wrench_of_bob;
+     item-type: WEAPON;
+     rarity: UNIQUE
+    );
+  ];
+  
+
+  
 )
+
+
+
 
 
 

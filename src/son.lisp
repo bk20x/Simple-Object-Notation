@@ -1,7 +1,7 @@
 (defpackage :son
   (:use :cl :alexa  :parse-float)
   (:export #:read-all-lines #:read-file-as-string #:lex #:get-symbol #:filter #:parse-toks
-           #:son-object #:son-list #:make-son-object #:fields #:elems #:get-field #:get-from-list-by-key))
+           #:son-object #:son-list #:make-son-object #:fields #:field #:elems #:elem))
 
 (in-package :son)
 
@@ -43,7 +43,7 @@
   (declare (type token token))
   (cdr token))
 
-(define-string-lexer son-lexer
+(define-string-lexer *son-lexer*
   ((:num "\\b(?:\\d+\\.\\d+|\\d+|\\.\\d+)\\b")
    (:name "[A-Za-z][A-Za-z0-9_-]*"))
   ("\\(" (return (tok :obj-start)))
@@ -61,23 +61,27 @@
   ("\\s+" nil)) 
 
 (defun lex (string)
-  (loop with lexer := (son-lexer string)
+  (loop with lexer := (*son-lexer* string)
         for tok := (funcall lexer)
         while tok
         collect tok))
 
 
-(defclass son-object () ;; impl for son-object as `(foo: bar; baz: 69)`
+(defclass son-object () ;; impl for son-object as `(foo: bar; baz: 69; x: (a: 7713))`
   ((fields              ;;`fields` is Hash-Table[string :: T]
     :initarg :fields
     :accessor fields)))
 
+(defun make-son-object (fields)
+  (make-instance 'son-object :fields fields))
 
 (defclass son-list ()
   ((elems             ;;`elems` is List[son-object]
     :initarg :elems
     :accessor elems)))
 
+(defun make-son-list (elems)
+  (make-instance 'son-list :elems elems))
 
 
 (defun parse-toks (tokens)
@@ -86,12 +90,12 @@
     (labels ((next-token ()
                "Gets next token and advances position. :3"
                (if current-toks
-                   (prog1 (car current-toks)
+                   (prog1 (car current-toks) 
                      (setf current-toks (cdr current-toks)))
                        nil))
              (peek-token ()
                "Checks next token without consuming. ^_^"
-            (car current-toks))
+               (car current-toks))
              (match-token (expected)
                "Consumes next token and errors if its type doesn't match. :P"
                (let ((token (next-token)))
@@ -102,36 +106,36 @@
              (parse-object ()
                "Returns a son-object instance. (ᴗ˳ᴗ)ᶻ𝗓"
               (match-token :obj-start)
-               (let ((ht (make-hash-table :test 'equal)))
+               (let ((ht (make-hash-table :test 'equal))) 
                  (loop while (and (peek-token)
                    (not (eql (get-symbol (peek-token)) :obj-end)))
                       do
                        (let* ((key-token (match-token :ident))
                               (key (get-val key-token)))
                          (match-token :colon)
-                          (let ((val (parse-value)))
+                          (let ((val (parse-token)))
                            (setf (gethash key ht) val)))
                           (when
                             (and
                              (peek-token)
                               (eql (get-symbol (peek-token)) :semicol))
                                (next-token)))
-                 (match-token :obj-end)
-                 (make-instance 'son-object :fields ht)))
+                   (match-token :obj-end)
+                    (make-instance 'son-object :fields ht)))
              (parse-list ()
-               "Parses a list of objects and returns a son-list instance. :D"
+               "Parses a list of objects and returns a son-list. :D"
               (match-token :list-start)
                (let ((items nil))
                  (loop while (and(peek-token)
                    (not (eql (get-symbol (peek-token)) :list-end)))
                      do
                       (setf items
-                       (nconc items (list (parse-value)))))
+                       (nconc items (list (parse-token)))))
                  (match-token :list-end) 
                  (let ((items-list
                          (remove-if #'null items)))
                            (make-instance 'son-list :elems items-list))))
-             (parse-value ()
+             (parse-token ()
                "Parses the next token whether it's a list, object, or simple value. >_<"
                (let ((token (peek-token)))
                  (cond
@@ -139,11 +143,10 @@
                    ((eql (get-symbol token) :list-start) (parse-list))
                    (t (let ((simple-value-token (next-token)))
                         (if simple-value-token
-                            (get-val simple-value-token)
-                            (error "Unexpected end of tokens while parsing simple value. 0_o"))))))))
+                         (get-val simple-value-token)
+                  (error "Unexpected end of tokens while parsing simple value. 0_o"))))))))
               (if (peek-token)
-
-            (let((result
+            (let ((result
                      (case (get-symbol (peek-token))
                           (:obj-start (parse-object))
                           (:list-start (parse-list))
@@ -159,7 +162,12 @@
 
 
 
-(defun get-field (field obj)
+(defun field (field obj)
   (gethash field
-    (fields obj)))
+      (fields obj)))
+
+
+(defun elem (idx lst)
+  (elt (elems lst) idx))
+
 
