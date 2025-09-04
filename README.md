@@ -7,9 +7,10 @@
 #### Right below is a little example of tokenization and accessing fields or elements from Son objects and lists:  --- and below that you will find the syntax  ^_^
 ```
 
-(use-package :son) ;; or prefix exports with son:
+(use-package :son)  ;; or prefix exports with son:
 => T
 
+;; Convert some son into a list of tokens
 CL-USER> (defvar toks
            (lex 
             "(foo: 4.5; bar: Yelloooo; boben: (lst: [2; 4; (x: 5)] ) )"))
@@ -36,22 +37,22 @@ CL-USER> obj
 => #<SON-OBJECT {10056579D3}>
 
 
-
+;; Fields is a hashtable so you can think about it as pretty much the same as JSON
 CL-USER> (fields obj)
-=> #<HASH-TABLE :TEST EQUAL :COUNT 3 {1005559C63}> ;; Fields is a hashtable so you can think about it as pretty much the same as JSON
+=> #<HASH-TABLE :TEST EQUAL :COUNT 3 {1005559C63}> 
 
 
 
 CL-USER> (field "lst"
           (field "boben" obj))
-=> #<SON-LIST {1005657953}> ;; A son list is enclosed in '[]'
+=> #<SON-LIST {1005657953}>   ;; A son list is enclosed in '[]'
 
 
-
+         ;; The elems field of a son-list is a simple list
 CL-USER> (elems 
           (field "lst"
            (field "boben" obj)))
-=> (2 4  #<SON-OBJECT {10055D8313}>)  ;; The elems field of a son-list is a simple list
+=> (2 4  #<SON-OBJECT {10055D8313}>) 
 
 
 
@@ -66,8 +67,8 @@ CL-USER> (elems
 => (2 4 #<SON-OBJECT {10055D8313}>)
 
 
-
-CL-USER> (elem 0  ;; `elem` gives you Direct access to the elements of a son-list
+         ;; `elem` gives you Direct access to the elements of a son-list
+CL-USER> (elem 0        
           (field "lst"
            (field "boben" obj)))
 => 2
