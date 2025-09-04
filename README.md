@@ -15,6 +15,8 @@ CL-USER> (defvar toks
             "(foo: 4.5; bar: Yelloooo; boben: (lst: [2; 4; (x: 5)] ) )"))
 => TOKS
 
+
+
 CL-USER> toks
 ((:OBJ-START) (:IDENT . "foo") (:COLON) (:FLOAT . 4.5) (:SEMICOL)
  (:IDENT . "bar") (:COLON) (:IDENT . "Yelloooo") (:SEMICOL) (:IDENT . "boben")
@@ -22,32 +24,48 @@ CL-USER> toks
  (:SEMICOL) (:INT . 4) (:SEMICOL) (:OBJ-START) (:IDENT . "x") (:COLON)
  (:INT . 5) (:OBJ-END) (:LIST-END) (:OBJ-END) (:OBJ-END))
 
+
+
 CL-USER> (defvar obj
            (parse-toks toks))
 => OBJ
 
+
+
 CL-USER> obj
 => #<SON-OBJECT {10056579D3}>
+
+
 
 CL-USER> (fields obj)
 => #<HASH-TABLE :TEST EQUAL :COUNT 3 {1005559C63}> ;; Fields is a hashtable so you can think about it as pretty much the same as JSON
 
+
+
 CL-USER> (field "lst"
           (field "boben" obj))
 => #<SON-LIST {1005657953}> ;; A son list is enclosed in '[]'
+
+
 
 CL-USER> (elems 
           (field "lst"
            (field "boben" obj)))
 => (2 4  #<SON-OBJECT {10055D8313}>)  ;; The elems field of a son-list is a simple list
 
+
+
 CL-USER> (son:field "foo" obj)
 => 4.5
+
+
 
 CL-USER> (elems 
           (field "lst" 
            (field "boben" obj)))
 => (2 4 #<SON-OBJECT {10055D8313}>)
+
+
 
 CL-USER> (elem 0  ;; `elem` gives you Direct access to the elements of a son-list
           (field "lst"
