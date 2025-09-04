@@ -21,11 +21,12 @@ CL-USER> (defvar toks
 
 
 CL-USER> toks
-((:OBJ-START) (:IDENT . "foo") (:COLON) (:FLOAT . 4.5) (:SEMICOL)
- (:IDENT . "bar") (:COLON) (:IDENT . "Yelloooo") (:SEMICOL) (:IDENT . "boben")
- (:COLON) (:OBJ-START) (:IDENT . "lst") (:COLON) (:LIST-START) (:INT . 2)
- (:SEMICOL) (:INT . 4) (:SEMICOL) (:OBJ-START) (:IDENT . "x") (:COLON)
- (:INT . 5) (:OBJ-END) (:LIST-END) (:OBJ-END) (:OBJ-END))
+
+=> ((:OBJ-START) (:IDENT . "foo") (:COLON) (:FLOAT . 4.5) (:SEMICOL)
+   (:IDENT . "bar") (:COLON) (:IDENT . "Yelloooo") (:SEMICOL) (:IDENT . "boben")
+   (:COLON) (:OBJ-START) (:IDENT . "lst") (:COLON) (:LIST-START) (:INT . 2)
+   (:SEMICOL) (:INT . 4) (:SEMICOL) (:OBJ-START) (:IDENT . "x") (:COLON)
+   (:INT . 5) (:OBJ-END) (:LIST-END) (:OBJ-END) (:OBJ-END))
 
 
 
