@@ -44,8 +44,9 @@
   (cdr token))
 
 (define-string-lexer *son-lexer*
-  ((:num "\\b(?:\\d+\\.\\d+|\\d+|\\.\\d+)\\b")
-   (:name "[A-Za-z][A-Za-z0-9_-]*"))
+  ((:sint "^-?\\d+")
+  (:sfloat"[-+]?\\d*\\.?\\d+(?:[eE][-+]?\\d+)?")  ;; got me feeling like larry wall
+  (:name "[A-Za-z][A-Za-z0-9_-]*"))
   ("\\(" (return (tok :obj-start)))
   ("\\)" (return (tok :obj-end)))
   ("\\[" (return (tok :list-start)))
@@ -57,11 +58,14 @@
                  (let ((sym (make-symbol $@)))
                    (symbol-name sym)))))
   
-  ("{{NUM}}" (return (tok :number (parse-float $@))))
+  ("{{SINT}}" (return (tok :int (parse-integer $@))))
+  ("{{SFLOAT}}" (return (tok :float (parse-float $@))))
   ("\\s+" nil)) 
 
-(defun lex (string)
-  (loop with lexer := (*son-lexer* string)
+(defun lex (str)
+  (declare (type string str)
+    (optimize (speed 3)))
+  (loop with lexer := (*son-lexer* str)
         for tok := (funcall lexer)
         while tok
         collect tok))
@@ -86,6 +90,7 @@
 
 (defun parse-toks (tokens)
   "Parses a list of tokens into a son-object or son-list. ^-^"
+  (declare (optimize (speed 3)))
   (let ((current-toks tokens))
     (labels ((next-token ()
                "Gets next token and advances position. :3"
@@ -167,7 +172,7 @@
       (fields obj)))
 
 
-(defun elem (idx lst)
-  (elt (elems lst) idx))
+(defun elem (idx slist)
+  (elt (elems slist) idx))
 
 

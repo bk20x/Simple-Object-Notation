@@ -25,7 +25,7 @@
      rarity: COMMON
     );
     (name: will-o-wisp;
-     health: 100;
+     health: 1.5;
      damage: 35;
      speed: 30;
      rarity: UNCOMMON
@@ -45,9 +45,7 @@
      rarity: UNIQUE
     );
   ];
-  
 
-  
 )
 
 

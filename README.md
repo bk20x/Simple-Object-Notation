@@ -1,5 +1,8 @@
 # Simple Object Notation
-## S-expression based format designed to be easy to parse and easy on the eyes. I plan to make it fully mappable and interchangeable with JSON.
+## S-expression based serialization/deserialization format that's easy to parse and easy on the eyes.
+
+### This project uses this beautiful package:
+###  alexa: A Lexical Analyzer Generator -- https://github.com/quil-lang/alexa
 
 ```
 (
@@ -15,27 +18,8 @@
     damage: 10;
     speed: 55;
     rarity: COMMON    
-   );
-   (name: orange_slime;
-    health: 75;
-    damage: 20;
-    speed: 55;
-    rarity: COMMON
-   );
-   (name: skeleton;
-    health: 80;
-    damage: 25;
-    speed: 60;
-    rarity: COMMON
-   );
-   (name: will-o-wisp;
-    health: 100;
-    damage: 35;
-    speed: 30;
-    rarity: UNCOMMON
    )
  ];
-  
   items: [
     (name: health_potion;
      item-type: POTION;
@@ -49,3 +33,4 @@
   
 )
 ```
+
