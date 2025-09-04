@@ -57,7 +57,7 @@ CL-USER> (field "lst"
 => #<SON-LIST {1005657953}>   ;; A son list is enclosed in '[]'
 
 
-         ;; The elems field of a son-list is a simple list
+;; The elems field of a son-list is a simple list
 CL-USER> (elems 
           (field "lst"
            (field "boben" obj)))
@@ -65,7 +65,7 @@ CL-USER> (elems
 
 
 
-         ;; `elem` gives you Direct access to the elements of a son-list
+;; `elem` gives you Direct access to the elements of a son-list
 CL-USER> (elem 0        
           (field "lst"
            (field "boben" obj)))
