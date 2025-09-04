@@ -1,8 +1,8 @@
 # Simple Object Notation
 ## S-expression based serialization/deserialization format that's easy to parse and easy on the eyes.
 
-### This project uses this beautiful package:
-###  alexa: A Lexical Analyzer Generator -- https://github.com/quil-lang/alexa
+#### This project uses this beautiful package:
+####  alexa: A Lexical Analyzer Generator -- https://github.com/quil-lang/alexa
 
 #### Right below is a little example of tokenization and accessing fields or elements from Son objects and lists:  --- and below that you will find the syntax  ^_^
 ```
@@ -102,4 +102,5 @@ CL-USER> (elem 0
   
 )
 ```
+
 
