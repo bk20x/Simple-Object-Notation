@@ -43,13 +43,6 @@ CL-USER> (field "foo" obj)
 => 4.5
 
 
-
-
-
-
-
-
-
 CL-USER> (field "lst"
           (field "boben" obj))
 => #<SON-LIST {1005657953}>   ;; A son list is enclosed in '[]'
