@@ -59,6 +59,7 @@ CL-USER> (elems
 CL-USER> (elem 0        
           (field "lst"
            (field "boben" obj)))
+=> 2
 
 ;; convert a son-object to a class
 CL-USER> (defclass vec3 ()
@@ -83,7 +84,6 @@ CL-USER> (describe vec)
    Y                              = 50
    Z                              = 75
 
-=> 2
 
 ```
 
