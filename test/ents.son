@@ -42,9 +42,12 @@
     );
     (name: the_wrench_of_bob;
      item-type: WEAPON;
-     rarity: UNIQUE
+     rarity: UNIQUE;
+     special: false;
+     poopen: true
     );
   ];
+  
 
 )
 

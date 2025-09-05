@@ -29,6 +29,13 @@
         (nreverse result))))
 
 
+(defun parse-bool (str)
+  (declare (type simple-string str)
+           (optimize (speed 3) (safety 0)))
+  (if (string= str "true")
+      t))
+
+
 (deftype token ()
   `(cons keyword t))
 
@@ -43,21 +50,22 @@
   (declare (type token token))
   (cdr token))
 
+
 (define-string-lexer *son-lexer*
   ((:sint "^-?\\d+")
   (:sfloat"[-+]?\\d*\\.?\\d+(?:[eE][-+]?\\d+)?")  ;; got me feeling like larry wall
-  (:name "[A-Za-z][A-Za-z0-9_-]*"))
+  (:name "[A-Za-z][A-Za-z0-9_-]*")
+  (:bool "true|false"))
   ("\\(" (return (tok :obj-start)))
   ("\\)" (return (tok :obj-end)))
   ("\\[" (return (tok :list-start)))
   ("\\]" (return (tok :list-end)))
   ("\\:" (return (tok :colon)))
   ("\\;" (return (tok :semicol)))
-  ("true" (return (tok :bool t)))
-  ("false"(return (tok :bool nil)))
-  ("{{NAME}}"   (return (tok :ident $@)))
+  ("{{BOOL}}"   (return (tok :bool (parse-bool $@))))
   ("{{SINT}}"   (return (tok :int (parse-integer $@))))
   ("{{SFLOAT}}" (return (tok :float (parse-float $@))))
+  ("{{NAME}}"   (return (tok :ident $@)))
   ("\\s+" nil)) 
 
 (defun lex (str)
@@ -84,7 +92,8 @@
 
 (defun parse-toks (tokens)
   "Parses a list of tokens into a son-object or son-list. ^-^"
-  (declare (optimize (speed 3)))
+    (declare (type list tokens)
+      (optimize (speed 3)))
   (let ((current-toks tokens))
     (labels ((next-token ()
                "Gets next token and advances position. :3"
@@ -108,7 +117,7 @@
                (let ((ht (make-hash-table :test 'equal))) 
                  (loop while (and (peek-token)
                    (not (eql (get-symbol (peek-token)) :obj-end)))
-                      do
+                       do
                        (let* ((key-token (match-token :ident))
                               (key (get-val key-token)))
                          (match-token :colon)
@@ -185,5 +194,6 @@
   (loop for k in (keys obj) do
    (let ((sym (read-from-string k))) 
     (if (slot-exists-p result sym)
-      (setf (slot-value result sym) (field k obj)))))
-        result))
+        (setf (slot-value result sym) (field k obj))
+ (error "Unknown field ~a for class ~a" sym class))))
+         result))
