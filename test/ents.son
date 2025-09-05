@@ -4,8 +4,6 @@
      health: 50; 
      damage: 5; 
      speed: 55;
-     alive: false;
-     vanilla: true;
      rarity: COMMON
     );
     (name: blue_slime;

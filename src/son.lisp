@@ -1,7 +1,7 @@
 (defpackage :son
-  (:use :cl :alexa  :parse-float)
+  (:use :cl :alexa :parse-float)
   (:export #:read-all-lines #:read-file-as-string #:lex #:get-symbol #:filter #:parse-toks
-           #:son-object #:son-list #:make-son-object #:fields #:field #:elems #:elem))
+           #:son-object #:son-list  #:fields #:field #:elems #:elem #:to-class #:keys))
 
 (in-package :son)
 
@@ -53,11 +53,9 @@
   ("\\]" (return (tok :list-end)))
   ("\\:" (return (tok :colon)))
   ("\\;" (return (tok :semicol)))
-  ("true"  (return (tok :bool t)))
-  ("false" (return (tok :bool nil)))
-  ("{{NAME}}"  (return (tok :ident
-                  (let ((sym (make-symbol $@)))
-                    (symbol-name sym)))))
+  ("true" (return (tok :bool t)))
+  ("false"(return (tok :bool nil)))
+  ("{{NAME}}"   (return (tok :ident $@)))
   ("{{SINT}}"   (return (tok :int (parse-integer $@))))
   ("{{SFLOAT}}" (return (tok :float (parse-float $@))))
   ("\\s+" nil)) 
@@ -71,22 +69,18 @@
         collect tok))
 
 
-(defclass son-object () ;; impl for son-object as `(foo: bar; baz: 69; x: (a: 7713))`
-  ((fields              ;;`fields` is Hash-Table[string :: T]
+(defclass son-object ()
+  ((fields
     :initarg :fields
-    :accessor fields)))
+    :accessor fields
+    :type hash-table)))
 
-(defun make-son-object (fields)
-  (make-instance 'son-object :fields fields))
 
 (defclass son-list ()
-  ((elems             ;;`elems` is List[son-object]
+  ((elems
     :initarg :elems
-    :accessor elems)))
-
-(defun make-son-list (elems)
-  (make-instance 'son-list :elems elems))
-
+    :accessor elems
+    :type list)))
 
 (defun parse-toks (tokens)
   "Parses a list of tokens into a son-object or son-list. ^-^"
@@ -171,8 +165,25 @@
   (gethash field
       (fields obj)))
 
-
 (defun elem (idx slist)
   (elt (elems slist) idx))
 
+(defun keys (obj)
+  (loop for k being the hash-keys of (fields obj)
+        collect k))
 
+
+
+
+(defun class-slot-names (class)
+ (mapcar #'closer-mop:slot-definition-name
+  (closer-mop:class-slots (find-class class))))
+
+
+(defun to-class (obj class)
+ (let ((result (make-instance class)))
+  (loop for k in (keys obj) do
+   (let ((sym (read-from-string k))) 
+    (if (slot-exists-p result sym)
+      (setf (slot-value result sym) (field k obj)))))
+        result))
