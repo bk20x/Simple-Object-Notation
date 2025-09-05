@@ -55,11 +55,34 @@ CL-USER> (elems
 => (2 4  #<SON-OBJECT {10055D8313}>) 
 
 
-
 ;; `elem` gives you Direct access to the elements of a son-list
 CL-USER> (elem 0        
           (field "lst"
            (field "boben" obj)))
+
+;; convert a son-object to a class
+CL-USER> (defclass vec3 ()
+           ((x)(y)(z)))
+=> #<STANDARD-CLASS COMMON-LISP-USER::VEC3>
+
+CL-USER> (defvar vecobj
+           (parse-toks
+            (lex "(x: 25; y: 50; z: 75)")))
+=> VECOBJ
+
+CL-USER> (defvar vec
+           (to-class vecobj 'vec3))
+=> VEC
+
+CL-USER> (describe vec)
+=> #<VEC3 {1003BFA3F3}>
+   [standard-object]
+
+ Slots with :INSTANCE allocation:
+   X                              = 25
+   Y                              = 50
+   Z                              = 75
+
 => 2
 
 ```
