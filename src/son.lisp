@@ -53,12 +53,12 @@
   ("\\]" (return (tok :list-end)))
   ("\\:" (return (tok :colon)))
   ("\\;" (return (tok :semicol)))
-  
-  ("{{NAME}}" (return (tok :ident
-                 (let ((sym (make-symbol $@)))
-                   (symbol-name sym)))))
-  
-  ("{{SINT}}" (return (tok :int (parse-integer $@))))
+  ("true"  (return (tok :bool t)))
+  ("false" (return (tok :bool nil)))
+  ("{{NAME}}"  (return (tok :ident
+                  (let ((sym (make-symbol $@)))
+                    (symbol-name sym)))))
+  ("{{SINT}}"   (return (tok :int (parse-integer $@))))
   ("{{SFLOAT}}" (return (tok :float (parse-float $@))))
   ("\\s+" nil)) 
 
