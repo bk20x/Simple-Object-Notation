@@ -1,6 +1,6 @@
 (defpackage :son
   (:use :cl :alexa :parse-float)
-  (:export #:read-all-lines #:read-file-as-string #:lex #:get-symbol #:filter #:parse-toks
+  (:export #:read-all-lines #:read-file-as-string #:lex #:get-symbol #:filter #:parse-token-list
            #:son-object #:son-list  #:fields #:field #:elems #:elem #:to-class #:keys))
 
 (in-package :son)
@@ -52,8 +52,8 @@
 
 
 (define-string-lexer *son-lexer*
-  ((:sint "^-?\\d+")
-  (:sfloat"[-+]?\\d*\\.?\\d+(?:[eE][-+]?\\d+)?")  ;; got me feeling like larry wall
+  ((:int "^-?\\d+")
+  (:float"[-+]?\\d*\\.?\\d+(?:[eE][-+]?\\d+)?")  ;; got me feeling like larry wall
   (:name "[A-Za-z][A-Za-z0-9_-]*")
   (:bool "true|false"))
   ("\\(" (return (tok :obj-start)))
@@ -63,8 +63,8 @@
   ("\\:" (return (tok :colon)))
   ("\\;" (return (tok :semicol)))
   ("{{BOOL}}"   (return (tok :bool (parse-bool $@))))
-  ("{{SINT}}"   (return (tok :int (parse-integer $@))))
-  ("{{SFLOAT}}" (return (tok :float (parse-float $@))))
+  ("{{INT}}"   (return (tok :int (parse-integer $@))))
+  ("{{FLOAT}}" (return (tok :float (parse-float $@))))
   ("{{NAME}}"   (return (tok :ident $@)))
   ("\\s+" nil)) 
 
@@ -90,29 +90,24 @@
     :accessor elems
     :type list)))
 
-(defun parse-toks (tokens)
-  "Parses a list of tokens into a son-object or son-list. ^-^"
+(defun parse-token-list (tokens)
     (declare (type list tokens)
       (optimize (speed 3)))
   (let ((current-toks tokens))
     (labels ((next-token ()
-               "Gets next token and advances position. :3"
                (if current-toks
                    (prog1 (car current-toks) 
                      (setf current-toks (cdr current-toks)))
                        nil))
              (peek-token ()
-               "Checks next token without consuming. ^_^"
                (car current-toks))
              (match-token (expected)
-               "Consumes next token and errors if its type doesn't match. :P"
                (let ((token (next-token)))
                  (unless (and token
                    (eql (get-symbol token) expected))
                     (error "Expected token of type ~a but got ~a" expected token))
                      token))
              (parse-object ()
-               "Returns a son-object instance. (ᴗ˳ᴗ)ᶻ𝗓"
               (match-token :obj-start)
                (let ((ht (make-hash-table :test 'equal))) 
                  (loop while (and (peek-token)
@@ -131,7 +126,6 @@
                    (match-token :obj-end)
                     (make-instance 'son-object :fields ht)))
              (parse-list ()
-               "Parses a list of objects and returns a son-list. :D"
               (match-token :list-start)
                (let ((items nil))
                  (loop while (and(peek-token)
@@ -144,7 +138,6 @@
                          (remove-if #'null items)))
                            (make-instance 'son-list :elems items-list))))
              (parse-token ()
-               "Parses the next token whether it's a list, object, or simple value. >_<"
                (let ((token (peek-token)))
                  (cond
                    ((eql (get-symbol token) :obj-start) (parse-object))
@@ -167,9 +160,6 @@
           (error "Empty token stream. 7_7")))))
 
 
-
-
-
 (defun field (field obj)
   (gethash field
       (fields obj)))
@@ -182,18 +172,15 @@
         collect k))
 
 
-
-
-(defun class-slot-names (class)
- (mapcar #'closer-mop:slot-definition-name
-  (closer-mop:class-slots (find-class class))))
-
-
 (defun to-class (obj class)
- (let ((result (make-instance class)))
-  (loop for k in (keys obj) do
-   (let ((sym (read-from-string k))) 
+  (let ((result (make-instance class))
+        (pkg (package-name (symbol-package class))))
+  (loop for slot in (keys obj) do
+   (let ((sym (read-from-string (concatenate 'string pkg "::"  slot))))
     (if (slot-exists-p result sym)
-        (setf (slot-value result sym) (field k obj))
+        (setf (slot-value result sym) (field slot obj))
  (error "Unknown field ~a for class ~a" sym class))))
          result))
+
+
+
