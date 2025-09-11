@@ -172,7 +172,7 @@
         collect k))
 
 
-(defun to-class (obj class)
+(defun to-class (class obj)
   (let ((result (make-instance class))
         (pkg (package-name (symbol-package class))))
   (loop for slot in (keys obj) do
