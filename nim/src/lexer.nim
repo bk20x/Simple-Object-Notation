@@ -28,13 +28,13 @@ type
   Token* = object
     case kind*: TokenType
     of tkInt:
-      intVal: int
+      intVal*: int
     of tkFloat:
-      floatVal: float
+      floatVal*: float
     of tkBool:
-      boolVal: bool
+      boolVal*: bool
     of tkString:
-      strVal: string
+      strVal*: string
     else:
       nil
 
@@ -53,7 +53,7 @@ type
 
 let
   Patterns: array[TokenType, Regex] = [
-     re"\d+",
+     re"^-?\d+$",
      re"[-+]?\\d*\\.?\\d+(?:[eE][-+]?\\d+)?",
      re"true|false",
      re"[A-Za-z][A-Za-z0-9_-]*",
@@ -69,7 +69,6 @@ let
 
 
 proc flush(lx: var Lexer): seq[Token] {.inline.} =
-#copyMem(addr result, addr lx.toks, sizeof(lx.toks))
   result = lx.toks
   lx.toks.setLen 0
   return result
@@ -79,10 +78,11 @@ proc flush(lx: var Lexer): seq[Token] {.inline.} =
 proc skipWhitespace(lx: var Lexer) {.inline.} =
   var pos = lx.pos
   while lx.buf[pos..pos].match Patterns[tkWhitespace]:
-    inc pos 
+    let matchLn = lx.buf[pos..pos].matchLen Patterns[tkWhitespace]
+    inc(pos, matchLn)
   lx.pos = pos
     
-   
+#proc parseValue(lx: var Lexer) {.inline.} =
   
 #proc parseSon(lx: var Lexer): seq[Token] =
 #  while not lx.state == EOF:
@@ -98,3 +98,4 @@ proc skipWhitespace(lx: var Lexer) {.inline.} =
 
 
 
+echo "yoben!"
