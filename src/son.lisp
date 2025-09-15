@@ -208,10 +208,13 @@
 
 (defmethod to-son ((obj string))
   obj)
+
+
 (defun slot-names (class)
   (mapcar
    #'closer-mop:slot-definition-name
    (closer-mop:class-slots (find-class class))))
+
 
 (defun to-table (obj)
   (declare (optimize (speed 3) (safety 0)))

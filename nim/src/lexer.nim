@@ -38,17 +38,17 @@ type
     else:
       nil
 
-  LexerState = enum
+  LexerState* = enum
     Ok, EOF, ExpectValue, InObject, InList
       
-  Lexer = object
-    pos: int
-    buf: string
-    input: Stream
-    last: Token
-    expected: TokenType
-    state: LexerState
-    toks: seq[Token]
+  Lexer* = object
+    pos*: int
+    buf*: string
+    input*: Stream
+    last*: Token
+    expected*: TokenType
+    state*: LexerState
+    toks*: seq[Token]
 
 
 let
@@ -75,14 +75,19 @@ proc flush(lx: var Lexer): seq[Token] {.inline.} =
   
   
 
-proc skipWhitespace(lx: var Lexer) {.inline.} =
+proc skipWhitespace*(lx: var Lexer) {.inline.} =
   var pos = lx.pos
-  while lx.buf[pos..pos].match Patterns[tkWhitespace]:
-    let matchLn = lx.buf[pos..pos].matchLen Patterns[tkWhitespace]
+  while lx.buf[pos..^1].match Patterns[tkWhitespace]:
+    let matchLn = lx.buf[pos..^1].matchLen Patterns[tkWhitespace]
     inc(pos, matchLn)
   lx.pos = pos
-    
+
+
+func rest*(lx: var Lexer): string {.inline.} =
+  lx.buf[lx.pos..^1]
+  
 #proc parseValue(lx: var Lexer) {.inline.} =
+  
   
 #proc parseSon(lx: var Lexer): seq[Token] =
 #  while not lx.state == EOF:
@@ -97,5 +102,3 @@ proc skipWhitespace(lx: var Lexer) {.inline.} =
 
 
 
-
-echo "yoben!"
