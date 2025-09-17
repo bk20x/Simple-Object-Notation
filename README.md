@@ -5,7 +5,7 @@
 #### Right below is a little example of tokenization and accessing fields or elements from Son objects and lists:  --- and below that you will find the syntax  ^_^
 ```
 
-(use-package :son)  ;; or prefix exports with son:
+(use-package :son)  ;;; or prefix exports with son:
 => T
 
 
