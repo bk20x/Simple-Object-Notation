@@ -2,13 +2,6 @@ import std/[strutils, streams, re]
 
 
 
-var test = """
-   (name: green_slime;
-    health: 100;
-    speed: 50;
-    rarity: COMMON)
-"""
-
 
 type
   TokenType* = enum
@@ -51,8 +44,10 @@ type
     toks*: seq[Token]
 
 
+
+    
 let
-  Patterns: array[TokenType, Regex] = [
+  Patterns*: array[TokenType, Regex] = [
      re"^-?\d+$",
      re"[-+]?\\d*\\.?\\d+(?:[eE][-+]?\\d+)?",
      re"true|false",
@@ -68,37 +63,35 @@ let
    ]
 
 
-proc flush(lx: var Lexer): seq[Token] {.inline.} =
-  result = lx.toks
-  lx.toks.setLen 0
-  return result
-  
-  
-
-proc skipWhitespace*(lx: var Lexer) {.inline.} =
-  var pos = lx.pos
-  while lx.buf[pos..^1].match Patterns[tkWhitespace]:
-    let matchLn = lx.buf[pos..^1].matchLen Patterns[tkWhitespace]
-    inc(pos, matchLn)
-  lx.pos = pos
 
 
 func rest*(lx: var Lexer): string {.inline.} =
   lx.buf[lx.pos..^1]
+
   
-#proc parseValue(lx: var Lexer) {.inline.} =
+proc flush(lx: var Lexer): seq[Token] {.inline.} =
+  result = lx.toks
+  lx.toks.setLen 0
+  return result  
+
   
-  
-#proc parseSon(lx: var Lexer): seq[Token] =
-#  while not lx.state == EOF:
-#    case lx.state
-#    of Ok:
-#     lx.skipWhitespace()
-#    of ExpectValue:
-#     lx.parseValue()
-#    of InObject:
-#     lx.parseObject()
-#  return lx.flush()
+#proc captureTokVal() 
+
+
+## State ::= Ok.
+proc skipWhitespace*(lx: var Lexer) {.inline.} =
+  var pos = lx.pos
+  while lx.rest.match Patterns[tkWhitespace]:
+    let matchLn = lx.rest.matchLen Patterns[tkWhitespace]
+    inc(pos, matchLn)
+  lx.pos = pos
 
 
 
+
+
+var test* = """
+      (x: 250;
+       y: 250.5;
+       z: worben)
+"""
