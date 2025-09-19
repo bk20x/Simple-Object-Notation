@@ -69,7 +69,7 @@ CL-USER> (defvar vecobj
 => VECOBJ
 
 CL-USER> (defvar vec
-           (to-class vecobj 'vec3))
+           (to-class 'vec3 vecobj))
 => VEC
 
 CL-USER> (describe vec)
@@ -87,7 +87,7 @@ CL-USER> (describe vec)
 ```
 (
   mobs:[
-   (name: green_slime; --- No quotes required for identifiers or String values, Strings are encoded for you.
+   (name: green_slime; --- No quotes required for identifiers or String values, Strings are handled for you.
     health: 50;
     damage: 5;
     speed: 55;
