@@ -53,7 +53,7 @@
 
 (define-string-lexer *son-lexer*
   ((:int "^-?\\d+")
-  (:float"[-+]?\\d*\\.?\\d+(?:[eE][-+]?\\d+)?")  ;; got me feeling like larry wall
+  (:float"[-+]?\\d*\\.?\\d+(?:[eE][-+]?\\d+)?") 
   (:name "[A-Za-z][A-Za-z0-9_-]*")
   (:bool "true|false"))
   ("\\(" (return (tok :obj-start)))
