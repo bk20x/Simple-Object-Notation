@@ -1,7 +1,7 @@
 (defpackage :son
   (:use :cl :alexa :parse-float)
-  (:export #:read-all-lines #:read-file-as-string #:lex #:get-symbol #:filter #:parse-token-list #:to-son
-           #:son-object #:son-list  #:fields #:field #:elems #:elem #:to-class #:keys))
+  (:export #:read-all-lines #:read-file-as-string #:lex #:get-symbol #:filter #:parse-token-list #:to-son #:to-class
+           #:son-object #:son-list #:fields #:field #:elems #:elem #:keys))
 
 (in-package :son)
 
@@ -184,6 +184,24 @@
 
 
 
+
+
+(defun slot-names (class)
+  (mapcar
+   #'closer-mop:slot-definition-name
+   (closer-mop:class-slots (find-class class))))
+
+
+(defun to-table (obj)
+  (declare (optimize (speed 3) (safety 0)))
+  (let ((result (make-hash-table :test 'equal)))
+    (mapcar
+     (lambda (s)
+       (setf (gethash s result) (slot-value obj s)))
+     (slot-names (class-name (class-of obj))))
+    result))
+
+
 (defmethod to-son ((obj standard-object))
   (declare (optimize (speed 3) (safety 0))
           (type standard-object obj))
@@ -209,19 +227,4 @@
 (defmethod to-son ((obj string))
   obj)
 
-
-(defun slot-names (class)
-  (mapcar
-   #'closer-mop:slot-definition-name
-   (closer-mop:class-slots (find-class class))))
-
-
-(defun to-table (obj)
-  (declare (optimize (speed 3) (safety 0)))
-  (let ((result (make-hash-table :test 'equal)))
-    (mapcar
-     (lambda (s)
-       (setf (gethash s result) (slot-value obj s)))
-     (slot-names (class-name (class-of obj))))
-    result))
 
