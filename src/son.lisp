@@ -145,19 +145,19 @@
                    (t (let ((simple-value-token (next-token)))
                         (if simple-value-token
                          (get-val simple-value-token)
-                  (error "Unexpected end of tokens while parsing simple value. 0_o"))))))))
+                  (error "Unexpected end of tokens while parsing simple value."))))))))
               (if (peek-token)
             (let ((result
                      (case (get-symbol (peek-token))
                           (:obj-start (parse-object))
                           (:list-start (parse-list))
-                          (t (error "Expected object or list at top level <_<."))))
+                          (t (error "Expected object or list at top level"))))
            (remaining-toks current-toks))
             (if remaining-toks
-                (error "Unexpected tokens at end of stream: ~a *_*" remaining-toks))
+                (error "Unexpected tokens at end of stream: ~a" remaining-toks))
                   result)
              
-          (error "Empty token stream. 7_7")))))
+          (error "Empty token stream.")))))
 
 
 (defun field (field obj)
